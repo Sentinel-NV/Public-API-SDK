@@ -1,0 +1,11 @@
+server:
+  port: 8000
+
+logging:
+  level:
+    root: debug
+
+sentinel:
+  baseUrl: # you can get it form public api system BO #
+  clientId: # you can get it form public api system BO #
+  secretKey: # you can get it form public api system BO #

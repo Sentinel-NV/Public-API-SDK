@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.3.3.RELEASE</version>
+    </parent>
+
+    <groupId>com.sentinel.iot</groupId>
+    <artifactId>sentinel-public-api</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+
+    <modules>
+        <module>SDK</module>
+        <module>SDK-demo</module>
+    </modules>
+
+    <properties>
+        <java.version>11</java.version>
+        <fastjson.version>1.2.62</fastjson.version>
+        <maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
+        <org.project.lombok>1.18.0</org.project.lombok>
+        <swagger.version>2.9.2</swagger.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${org.project.lombok}</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
+
+</project>
