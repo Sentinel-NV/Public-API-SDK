@@ -1,5 +1,6 @@
 package com.sentinel.iot.api.demo.controller;
 
+import com.sentinel.iot.api.common.NotificationResponseCode;
 import com.sentinel.iot.api.common.NotificationType;
 import com.sentinel.iot.api.core.Notification;
 import com.sentinel.iot.api.demo.common.ResponseCode;
@@ -96,7 +97,7 @@ public class NotificationController {
                 log.error("Unknown notification {} " + notification);
                 break;
         }
-        return ResponseCode.SUCCESS;
+        return NotificationResponseCode.SUCCESS;
     }
 
 }
