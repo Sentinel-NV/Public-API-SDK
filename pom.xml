@@ -21,11 +21,12 @@
     </modules>
 
     <properties>
-        <java.version>8</java.version>
+        <java.version>1.8</java.version>
         <fastjson.version>1.2.62</fastjson.version>
         <maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
         <org.project.lombok>1.18.0</org.project.lombok>
         <swagger.version>2.9.2</swagger.version>
+        <slf4j-api.version>1.7.30</slf4j-api.version>
     </properties>
 
     <dependencies>

@@ -1,8 +1,8 @@
 package com.sentinel.iot.api.common;
 
 /**
- * @Copyright Mobit Belgium bvba
- * @Author: jiubo
+ * @Copyright Sentinel NV
+ * @Author: Bob Jiang
  * @Date: 2020/9/9 10:36
  * @Description:
  */

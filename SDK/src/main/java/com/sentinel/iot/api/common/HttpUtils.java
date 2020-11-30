@@ -1,11 +1,13 @@
 package com.sentinel.iot.api.common;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
 
 /**
  * @Copyright Sentinel NV
@@ -15,7 +17,7 @@ import java.util.logging.Logger;
  */
 public class HttpUtils {
 
-    private static Logger log = Logger.getLogger(HttpUtils.class.getName());
+    private static Logger log = LoggerFactory.getLogger(HttpUtils.class);
 
     public static String doPostForm(String url, Map<String, Object> parameterMap, String token) {
         HttpURLConnection connection = null;
@@ -24,7 +26,6 @@ public class HttpUtils {
         BufferedReader bufferedReader = null;
         String result = null;
         try {
-
             connection = (HttpURLConnection) new URL(url).openConnection();
             connection.setRequestMethod("POST");
             connection.setConnectTimeout(10000);
@@ -40,11 +41,14 @@ public class HttpUtils {
             if (parameterMap != null && parameterMap.size() > 0) {
                 StringBuilder sb = new StringBuilder();
                 Set<Map.Entry<String, Object>> entrySet = parameterMap.entrySet();
-                for (Map.Entry<String, Object> map : entrySet) {
+                for (Map.Entry<String, Object> entry : entrySet) {
+                    if (entry.getValue() == null) {
+                        continue;
+                    }
                     if (sb.length() > 0) {
                         sb.append("&");
                     }
-                    sb.append(map.getKey()).append("=").append(map.getValue());
+                    sb.append(entry.getKey()).append("=").append(entry.getValue());
                 }
                 outputStream.write(sb.toString().getBytes());
             }
@@ -53,7 +57,7 @@ public class HttpUtils {
                 inputStream = connection.getInputStream();
                 bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
                 StringBuffer sb = new StringBuffer();
-                String temp = null;
+                String temp;
                 while ((temp = bufferedReader.readLine()) != null) {
                     sb.append(temp).append("\r\n");
                 }
@@ -64,7 +68,7 @@ public class HttpUtils {
                     .append("\nParameter : ").append(parameterMap)
                     .append("\nHttpStatus : ").append(httpStatus)
                     .append("\nResponse : ").append(result);
-            log.fine(logStringBuilder.toString());
+            log.debug(logStringBuilder.toString());
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

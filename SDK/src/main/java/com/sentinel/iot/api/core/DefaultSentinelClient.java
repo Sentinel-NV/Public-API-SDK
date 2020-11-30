@@ -1,18 +1,20 @@
 package com.sentinel.iot.api.core;
 
 import com.alibaba.fastjson.JSON;
-import com.sentinel.iot.api.model.SentinelResponse;
-import com.sentinel.iot.api.common.ResultCode;
 import com.sentinel.iot.api.common.HttpUtils;
-import com.sentinel.iot.api.model.TokenResponse;
+import com.sentinel.iot.api.common.ResultCode;
+import com.sentinel.iot.api.model.CommandValidPeriod;
 import com.sentinel.iot.api.model.Device;
+import com.sentinel.iot.api.model.SentinelResponse;
+import com.sentinel.iot.api.model.TokenResponse;
 import com.sentinel.iot.api.model.request.BuzzerAndLedRequest;
 import com.sentinel.iot.api.model.request.StartTripRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 /**
  * @Copyright Sentinel NV
@@ -21,9 +23,9 @@ import java.util.logging.Logger;
  * @Description:
  */
 public class DefaultSentinelClient {
-    private Logger log = Logger.getLogger(this.getClass().getName());
+    private static Logger log = LoggerFactory.getLogger(DefaultSentinelClient.class);
 
-    private String DOMAIN = "http://8.209.81.130:10111/api/v1";
+    private String DOMAIN = "https://api.sentinel-tec.com/api/v1";
 
     private final String ACCESS_TOKEN_URL = "/auth/token";
 
@@ -90,7 +92,7 @@ public class DefaultSentinelClient {
         parameterMap.put("secretKey", secretKey);
         SentinelResponse sentinelResponse = defaultRequest(DOMAIN + ACCESS_TOKEN_URL, parameterMap);
         if (!ResultCode.SUCCESS.equals(sentinelResponse.getCode())) {
-            log.fine("Get access token fail, " + sentinelResponse);
+            log.debug("Get access token fail, " + sentinelResponse);
             return;
         }
         TokenResponse tokenResponse = JSON.parseObject(sentinelResponse.getBody(), TokenResponse.class);
@@ -107,15 +109,23 @@ public class DefaultSentinelClient {
         return accessToken;
     }
 
-    private Map<String, Object> getParameterMap(String lockId) {
-        Map<String, Object> parameterMap = new HashMap<>(1);
+    private Map<String, Object> getParameterMap(String lockId, CommandValidPeriod commandValidPeriod) {
+        Map<String, Object> parameterMap = new HashMap<>(3);
         parameterMap.put("lockId", lockId);
+        if (commandValidPeriod != null) {
+            commandValidPeriod.buildParameter(parameterMap);
+        }
         return parameterMap;
     }
 
     private SentinelResponse defaultRequest(String url, Map<String, Object> parameterMap, String accessToken) {
         String result = HttpUtils.doPostForm(url, parameterMap, accessToken);
-        SentinelResponse sentinelResponse = JSON.parseObject(result, SentinelResponse.class);
+        SentinelResponse sentinelResponse;
+        try {
+            sentinelResponse = JSON.parseObject(result, SentinelResponse.class);
+        } catch (Exception e) {
+            sentinelResponse = new SentinelResponse();
+        }
         return sentinelResponse;
     }
 
@@ -123,59 +133,72 @@ public class DefaultSentinelClient {
         return defaultRequest(url, parameterMap, null);
     }
 
-    public SentinelResponse invalidateToken(String lockId) {
-        return defaultRequest(DOMAIN + EXIT_URL, getParameterMap(lockId), getAccessToken());
+    public SentinelResponse invalidateToken() {
+        return defaultRequest(DOMAIN + EXIT_URL, null, getAccessToken());
     }
 
     public Device executeQuery(String lockId) {
-        SentinelResponse sentinelResponse = defaultRequest(DOMAIN + QUERY_URL, getParameterMap(lockId), getAccessToken());
+        SentinelResponse sentinelResponse = defaultRequest(DOMAIN + QUERY_URL, getParameterMap(lockId, null), getAccessToken());
         if (!ResultCode.SUCCESS.equals(sentinelResponse.getCode())) {
-            log.fine("Query lock fail, " + sentinelResponse);
+            log.debug("Query lock fail, " + sentinelResponse);
             return null;
         }
         return JSON.parseObject(sentinelResponse.getBody(), Device.class);
     }
 
     public SentinelResponse open(String lockId) {
-        return defaultRequest(DOMAIN + OPEN_URL, getParameterMap(lockId), getAccessToken());
+        return open(lockId, null);
+    }
+
+    public SentinelResponse open(String lockId, CommandValidPeriod commandValidPeriod) {
+        return defaultRequest(DOMAIN + OPEN_URL, getParameterMap(lockId, commandValidPeriod), getAccessToken());
     }
 
     public SentinelResponse gpsLocation(String lockId) {
-        return defaultRequest(DOMAIN + GPS_URL, getParameterMap(lockId), getAccessToken());
+        return gpsLocation(lockId, null);
+    }
+
+    public SentinelResponse gpsLocation(String lockId, CommandValidPeriod commandValidPeriod) {
+        return defaultRequest(DOMAIN + GPS_URL, getParameterMap(lockId, commandValidPeriod), getAccessToken());
     }
 
     public SentinelResponse beep(String lockId) {
-        return defaultRequest(DOMAIN + BEEP_URL, getParameterMap(lockId), getAccessToken());
+        return beep(lockId, null);
+    }
+
+    public SentinelResponse beep(String lockId, CommandValidPeriod commandValidPeriod) {
+        return defaultRequest(DOMAIN + BEEP_URL, getParameterMap(lockId, commandValidPeriod), getAccessToken());
     }
 
     public SentinelResponse reset(String lockId) {
-        return defaultRequest(DOMAIN + RESET_URL, getParameterMap(lockId), getAccessToken());
+        return reset(lockId, null);
+    }
+
+    public SentinelResponse reset(String lockId, CommandValidPeriod commandValidPeriod) {
+        return defaultRequest(DOMAIN + RESET_URL, getParameterMap(lockId, commandValidPeriod), getAccessToken());
     }
 
     public SentinelResponse resetMotor(String lockId) {
-        return defaultRequest(DOMAIN + RESET_MOTOR_URL, getParameterMap(lockId), getAccessToken());
+        return resetMotor(lockId, null);
+    }
+
+    public SentinelResponse resetMotor(String lockId, CommandValidPeriod commandValidPeriod) {
+        return defaultRequest(DOMAIN + RESET_MOTOR_URL, getParameterMap(lockId, commandValidPeriod), getAccessToken());
     }
 
     public SentinelResponse buzzerAndLed(BuzzerAndLedRequest buzzerAndLedRequest) {
         return defaultRequest(DOMAIN + SOUND_LIGHT_REMINDER_URL, buzzerAndLedRequest.buildParameter(), getAccessToken());
     }
 
-    /**
-     * Send this command after creating a new trip.
-     * After unlocking, the lock will report GPS coordinates according to the set period.
-     * If the lock is opened and in a static state, GPS data will not be reported.
-     * GPS data will not be reported after closing the lock.
-     * You must call endTrip after you finish trip.
-     * @param startTripRequest
-     * @return
-     */
     public SentinelResponse startTrip(StartTripRequest startTripRequest) {
         return defaultRequest(DOMAIN + START_TRIP_URL, startTripRequest.buildParameter(), getAccessToken());
     }
 
     public SentinelResponse endTrip(String lockId) {
-        return defaultRequest(DOMAIN + END_TRIP_URL, getParameterMap(lockId), getAccessToken());
-
+        return endTrip(lockId, null);
     }
 
+    public SentinelResponse endTrip(String lockId, CommandValidPeriod commandValidPeriod) {
+        return defaultRequest(DOMAIN + END_TRIP_URL, getParameterMap(lockId, commandValidPeriod), getAccessToken());
+    }
 }

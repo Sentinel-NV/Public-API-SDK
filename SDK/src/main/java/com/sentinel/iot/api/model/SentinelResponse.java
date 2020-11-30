@@ -1,7 +1,8 @@
 package com.sentinel.iot.api.model;
 
-import java.io.Serializable;
 import com.sentinel.iot.api.common.ResultCode;
+
+import java.io.Serializable;
 
 /**
  * @Copyright Sentinel NV

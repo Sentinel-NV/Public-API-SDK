@@ -65,6 +65,10 @@ public class Device {
      */
     private Date lastChargingTime;
 
+    private String hardwareVersion;
+
+    private String firmwareVersion;
+
     public String getLockId() {
         return lockId;
     }
@@ -169,6 +173,21 @@ public class Device {
         this.lastChargingTime = lastChargingTime;
     }
 
+    public String getHardwareVersion() {
+        return hardwareVersion;
+    }
+
+    public void setHardwareVersion(String hardwareVersion) {
+        this.hardwareVersion = hardwareVersion;
+    }
+
+    public String getFirmwareVersion() {
+        return firmwareVersion;
+    }
+
+    public void setFirmwareVersion(String firmwareVersion) {
+        this.firmwareVersion = firmwareVersion;
+    }
 
     @Override
     public String toString() {
@@ -186,6 +205,8 @@ public class Device {
                 ", lastReceivedDataTime=" + lastReceivedDataTime +
                 ", geoPoint=" + geoPoint +
                 ", lastChargingTime=" + lastChargingTime +
+                ", hardwareVersion='" + hardwareVersion + '\'' +
+                ", firmwareVersion='" + firmwareVersion + '\'' +
                 '}';
     }
 }

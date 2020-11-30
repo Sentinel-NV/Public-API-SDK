@@ -1,5 +1,7 @@
 package com.sentinel.iot.api.model.request;
 
+import com.sentinel.iot.api.model.CommandValidPeriod;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,7 +11,7 @@ import java.util.Map;
  * @Date: 2020/8/24
  * @Description:
  */
-public class BuzzerAndLedRequest {
+public class BuzzerAndLedRequest extends CommandValidPeriod {
 
     private String lockId;
 
@@ -144,7 +146,7 @@ public class BuzzerAndLedRequest {
     }
 
     public Map<String, Object> buildParameter() {
-        Map<String, Object> parameterMap = new HashMap<>(8);
+        Map<String, Object> parameterMap = new HashMap<>(10);
         parameterMap.put("lockId", lockId);
         parameterMap.put("soundTimes", sound.times);
         parameterMap.put("soundDuration", sound.duration);
@@ -153,6 +155,7 @@ public class BuzzerAndLedRequest {
         parameterMap.put("lightTimes", light.times);
         parameterMap.put("lightDuration", light.duration);
         parameterMap.put("lightInterval", light.interval);
+        super.buildParameter(parameterMap);
         return parameterMap;
     }
 
@@ -162,7 +165,7 @@ public class BuzzerAndLedRequest {
                 "lockId='" + lockId + '\'' +
                 ", sound=" + sound +
                 ", light=" + light +
-                '}';
+                "} " + super.toString();
     }
 }
 

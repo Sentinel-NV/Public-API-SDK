@@ -1,5 +1,6 @@
 package com.sentinel.iot.api.model.message;
 import com.sentinel.iot.api.common.StatusConstant;
+
 /**
  * @Copyright Sentinel NV
  * @Author: Zhen.Yang

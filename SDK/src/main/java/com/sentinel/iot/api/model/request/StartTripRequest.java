@@ -1,5 +1,6 @@
 package com.sentinel.iot.api.model.request;
 
+import com.sentinel.iot.api.model.CommandValidPeriod;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +11,7 @@ import java.util.Map;
  * @Date: 2020/9/27 14:01
  * @Description:
  */
-public class StartTripRequest {
+public class StartTripRequest extends CommandValidPeriod {
 
     private String lockId;
 
@@ -18,11 +19,6 @@ public class StartTripRequest {
 
     private String rfidCardId;
 
-    /**
-     * Unit second
-     * Value range from 30 to 999
-     * Warning: GPS positioning function consumes a lot of power
-     */
     private Integer reportGpsCycle;
 
     public StartTripRequest() {
@@ -68,23 +64,18 @@ public class StartTripRequest {
     }
 
     public Map<String, Object> buildParameter() {
-        if(reportGpsCycle == null){
-            this.reportGpsCycle = 50;
-        }
-        if(this.getReportGpsCycle()<30 || this.getReportGpsCycle()>999){
-            throw new RuntimeException("The value range of \"reportGpsCycle\" is >=30 <=999");
-        }
         Map<String, Object> parameterMap = new HashMap<>(6);
         parameterMap.put("lockId", lockId);
         parameterMap.put("tripUUID", getTripUUID());
         parameterMap.put("rfidCardId", getRfidCardId());
         parameterMap.put("reportGpsCycle", getReportGpsCycle());
+        super.buildParameter(parameterMap);
         return parameterMap;
     }
 
     @Override
     public String toString() {
-        return "StartTripInformation{" +
+        return "StartTripRequest{" +
                 "lockId='" + lockId + '\'' +
                 ", tripUUID='" + tripUUID + '\'' +
                 ", rfidCardId='" + rfidCardId + '\'' +
