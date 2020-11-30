@@ -1,4 +1,4 @@
-package com.sentinel.iot.api.model;
+package com.sentinel.iot.api.model.request;
 
 import java.util.HashMap;
 import java.util.Map;

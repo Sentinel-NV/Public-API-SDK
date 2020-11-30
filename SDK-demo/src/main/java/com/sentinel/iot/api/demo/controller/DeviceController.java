@@ -2,9 +2,10 @@ package com.sentinel.iot.api.demo.controller;
 
 import com.sentinel.iot.api.core.DefaultSentinelClient;
 import com.sentinel.iot.api.demo.common.ResponseCode;
-import com.sentinel.iot.api.model.BuzzerAndLedRequest;
+import com.sentinel.iot.api.model.request.BuzzerAndLedRequest;
 import com.sentinel.iot.api.model.Device;
 import com.sentinel.iot.api.model.SentinelResponse;
+import com.sentinel.iot.api.model.request.StartTripRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -80,6 +81,22 @@ public class DeviceController {
         log.debug("Send a buzzer and LED light reminder request to the Sentinel lock with ID {} ", buzzerAndLedRequest);
         SentinelResponse response = sentinelClient.buzzerAndLed(buzzerAndLedRequest);
         log.debug("Send the buzzer and LED light reminder request result to the Sentinel lock with ID {} ", response);
+        return ResponseCode.SUCCESS;
+    }
+
+    @PostMapping("/startTrip")
+    public String startTrip(@RequestBody StartTripRequest startTripRequest) {
+        log.debug("Send start trip request to the Sentinel lock with ID {} ", startTripRequest);
+        SentinelResponse response = sentinelClient.startTrip(startTripRequest);
+        log.debug("Send the start trip request result to the Sentinel lock with ID {} ", response);
+        return ResponseCode.SUCCESS;
+    }
+
+    @PostMapping("/endTrip")
+    public String endTrip(String lockId) {
+        log.debug("Send a end trip request to the Sentinel lock with ID {} ", lockId);
+        SentinelResponse response = sentinelClient.endTrip(lockId);
+        log.debug("Send the end trip request result to the Sentinel lock with ID {} ", response);
         return ResponseCode.SUCCESS;
     }
 }

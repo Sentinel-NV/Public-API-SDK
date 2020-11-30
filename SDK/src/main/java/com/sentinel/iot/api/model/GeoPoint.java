@@ -19,6 +19,8 @@ public class GeoPoint {
      */
     private Double latitude;
 
+    private String tripUUID;
+
     public Double getLongitude() {
         return longitude;
     }
@@ -35,11 +37,20 @@ public class GeoPoint {
         this.latitude = latitude;
     }
 
+    public String getTripUUID() {
+        return tripUUID;
+    }
+
+    public void setTripUUID(String tripUUID) {
+        this.tripUUID = tripUUID;
+    }
+
     @Override
     public String toString() {
         return "GeoPoint{" +
                 "longitude=" + longitude +
                 ", latitude=" + latitude +
+                ", tripUUID='" + tripUUID + '\'' +
                 '}';
     }
 }

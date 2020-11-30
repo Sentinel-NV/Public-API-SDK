@@ -8,3 +8,6 @@
 4. Configure the notification address of the device group.
 5. Get your Client Id and Secret Key in SEETING-API Authentication
 6. Start the test
+
+# 1.1 release note
+

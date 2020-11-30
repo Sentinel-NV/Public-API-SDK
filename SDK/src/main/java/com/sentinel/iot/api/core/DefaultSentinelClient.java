@@ -6,7 +6,8 @@ import com.sentinel.iot.api.common.ResultCode;
 import com.sentinel.iot.api.common.HttpUtils;
 import com.sentinel.iot.api.model.TokenResponse;
 import com.sentinel.iot.api.model.Device;
-import com.sentinel.iot.api.model.BuzzerAndLedRequest;
+import com.sentinel.iot.api.model.request.BuzzerAndLedRequest;
+import com.sentinel.iot.api.model.request.StartTripRequest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,6 +42,10 @@ public class DefaultSentinelClient {
     private final String RESET_MOTOR_URL = "/lock/control/resetMotor";
 
     private final String SOUND_LIGHT_REMINDER_URL = "/lock/control/soundLightReminder";
+
+    private final String START_TRIP_URL = "/lock/control/startTrip";
+
+    private final String END_TRIP_URL = "/lock/control/endTrip";
 
     private final Integer SAFE_RETENTION_SECOND = 30;
 
@@ -154,4 +159,23 @@ public class DefaultSentinelClient {
     public SentinelResponse buzzerAndLed(BuzzerAndLedRequest buzzerAndLedRequest) {
         return defaultRequest(DOMAIN + SOUND_LIGHT_REMINDER_URL, buzzerAndLedRequest.buildParameter(), getAccessToken());
     }
+
+    /**
+     * Send this command after creating a new trip.
+     * After unlocking, the lock will report GPS coordinates according to the set period.
+     * If the lock is opened and in a static state, GPS data will not be reported.
+     * GPS data will not be reported after closing the lock.
+     * You must call endTrip after you finish trip.
+     * @param startTripRequest
+     * @return
+     */
+    public SentinelResponse startTrip(StartTripRequest startTripRequest) {
+        return defaultRequest(DOMAIN + START_TRIP_URL, startTripRequest.buildParameter(), getAccessToken());
+    }
+
+    public SentinelResponse endTrip(String lockId) {
+        return defaultRequest(DOMAIN + END_TRIP_URL, getParameterMap(lockId), getAccessToken());
+
+    }
+
 }
